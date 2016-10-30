@@ -11,7 +11,7 @@ ls $1 | grep -v .tgz$ | xargs tar cvzf Backup$date.tgz -C $1
 mv Backup$date.tgz $1
 echo "Backup Backup$date.tgz created successfully!" >> backupsLog
 
-(cd $1 && git add Backup$date.tgz && git commit -m "Created Backup$date")
+(cd $1 && git pull && git add Backup$date.tgz && git commit -m "Created Backup$date")
 echo "Backup Backup$date.tgz committed to the local git repository" >> backupsLog
 (cd $1 && git push https://$3:$4@$2 --all)
 echo "Backup Backup$date.tgz pushed to the remote git repository" >> backupsLog
