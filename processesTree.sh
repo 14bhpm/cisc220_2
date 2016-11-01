@@ -4,15 +4,8 @@
 export list=$(ps axo comm,pid,ppid,user,start | awk '{print $1 " , " $2 " , " $3 " , " $4 " , " $5}')
 export incr=0
 export numProcesses=${#list[*]}
+export listPpid=( $(echo "$list" | awk -F ' , ' '{print $3}') )
 
-
-
-# SUBLISTS WITH SPECIFIC INFORMATION
-#listCommand=( $(echo "$list" | awk -F ' , ' '{print $1}') )
-#listPid=( $(echo "$list" | awk -F ' , ' '{print $2}') )
-#listPpid=( $(echo "$list" | awk -F ' , ' '{print $3}') )
-#listUser=( $(echo "$list" | awk -F ' , ' '{print $4}') )
-#listStartTime=( $(echo "" | awk -F ' , ' '{print $5}') )
 
 
 
@@ -27,14 +20,17 @@ export numProcesses=${#list[*]}
 #3. if ppid == 1 then it is a child of systemd
 
 function recurse {
-((incr = $incr+1))
-for (( i=1; i<=numProcesses; i++ )); do 
-	if [[(echo list[i] | awk '{print $3}') -eq $1]]; then
-		echo list[i]
-		recurse echo list[i] | awk '{print $2}'
+((incr=$incr+1))
+for (( i=1; i<numProcesses; i++ )); do
+	echo swag 
+	if [[ ${listPpid[i]} -eq $1 ]]; then
+		echo swag2
+		echo ${list[i]}
+		echo list[i] | awk '{print $2}' | recurse
 	fi
 done 
 ((incr = $incr-1))
 }
 
+echo $numProcesses
 recurse 0
