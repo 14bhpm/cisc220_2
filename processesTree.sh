@@ -1,31 +1,22 @@
 #!/bin/bash
 
 # MAIN LIST WITH ALL INFORMATION
-export list=$(ps axo comm,pid,ppid,user,start | awk '{print $1 " , " $2 " , " $3 " , " $4 " , " $5}')
+export var=()
+mapfile -t var < <(ps axo comm,pid,ppid,user,start | grep -e '')
 
-# OTHER LIST DECLARATION TO TRY
-declare -A tree
-for status in /proc/[0-9]*/status; do
-    while read type value; do
-        [[ "$type" == Name: ]] && cmd=$value
-        [[ "$type" == Pid: ]] && pid=$value
-        [[ "$type" == PPid: ]] && ppid=$value
-    done < "$status"
-    tree[$pid:$ppid]="$cmd PID:$pid PPID:$ppid"
-done
-#END LIST
 
 
 export incr=0
-export numProcesses=${#list[*]}
-export listPpid=( $(echo "$list" | awk -F ' , ' '{print $3}') )
+export numProcesses=${#var[*]}
+export listPpid=()
+mapfile -t listPpid < <(ps axo comm,pid,ppid,user,start | grep -e '' | awk '{print $3}')
+
 
 
 
 
 #PRINTS INFO IN MAIN LIST
 
-#printf "%s\n" "${list[@]}"
 
 
 # ALGORITHM SO FAR
@@ -39,8 +30,8 @@ for (( i=1; i<numProcesses; i++ )); do
 	echo swag 
 	if [[ ${listPpid[i]} -eq $1 ]]; then
 		echo swag2
-		echo ${list[i]}
-		echo list[i] | awk '{print $2}' | recurse
+		echo ${var[i]}
+		echo var[i] | awk '{print $2}' | recurse
 	fi
 done 
 ((incr = $incr-1))
