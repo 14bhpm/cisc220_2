@@ -27,14 +27,13 @@ mapfile -t listPpid < <(ps axo comm,pid,ppid,user,start | grep -e '' | awk '{pri
 function recurse {
 ((incr=$incr+1))
 for (( i=1; i<numProcesses; i++ )); do
-	echo swag 
 	if [[ ${listPpid[i]} -eq $1 ]]; then
-		echo swag2
 		echo ${var[i]}
+		echo var[i] | awk '{print $2}' && echo swag
 		echo var[i] | awk '{print $2}' | recurse
 	fi
 done 
-((incr = $incr-1))
+((incr=$incr-1))
 }
 
 echo $numProcesses
