@@ -2,6 +2,20 @@
 
 # MAIN LIST WITH ALL INFORMATION
 export list=$(ps axo comm,pid,ppid,user,start | awk '{print $1 " , " $2 " , " $3 " , " $4 " , " $5}')
+
+# OTHER LIST DECLARATION TO TRY
+declare -A tree
+for status in /proc/[0-9]*/status; do
+    while read type value; do
+        [[ "$type" == Name: ]] && cmd=$value
+        [[ "$type" == Pid: ]] && pid=$value
+        [[ "$type" == PPid: ]] && ppid=$value
+    done < "$status"
+    tree[$pid:$ppid]="$cmd PID:$pid PPID:$ppid"
+done
+#END LIST
+
+
 export incr=0
 export numProcesses=${#list[*]}
 
