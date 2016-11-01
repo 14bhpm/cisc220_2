@@ -25,7 +25,15 @@ sudo iptables -A INPUT -p TCP --dport 80,443 -j ACCEPT
 sudo iptables -A INPUT -p TCP -j DROP
 
 #block connecting from your computer to any IP outside the range 130.15.0.0 to 130.15.255.255 [netmask/16]
+sudo iptables -A OUTPUT -p TCP -s 130.15.0.0/16 -j ACCEPT
 
 # only allow IP 130.15.100.100 to connect to your MySQL running on port 3306
+sudo iptables -A INPUT -p TCP --dport 3306 -s 130.15.100.100 -j ACCEPT
 
 #drop outgoing ssh traffic to all other computers
+sudo iptables -A OUTPUT -p TCP --dport 22 -j DROP
+
+# Can you still ssh the VM from your host machine? Why? If you can't, how to fix it?
+# No. You need some port forwarding: you can point putty to port 22 of 127.0.1.1 and VB will redirect this connection to your VM.
+
+
